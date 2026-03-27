@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Search — SFAAM NEWS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.search-hero { background: var(--white); border-bottom: 1px solid var(--border); padding: 28px 0; margin-bottom: 24px; }
+.search-hero-inner { max-width: 700px; margin: 0 auto; padding: 0 16px; }
+.search-hero h1 { font-family: 'Noto Serif', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 14px; }
+.search-big { display: flex; }
+.search-big input { flex: 1; padding: 12px 16px; border: 2px solid var(--border); font-size: 1rem; outline: none; border-radius: 3px 0 0 3px; font-family: 'Open Sans',sans-serif; }
+.search-big input:focus { border-color: var(--red); }
+.search-big button { padding: 12px 20px; background: var(--red); border: none; color: white; font-size: 1rem; font-weight: 700; cursor: pointer; border-radius: 0 3px 3px 0; }
+.result-count { font-size: 0.82rem; color: var(--muted); margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div id="topbarWrap"></div>
+<div id="navWrap"></div>
+<div class="search-hero">
+  <div class="search-hero-inner">
+    <h1>🔍 Search SFAAM NEWS</h1>
+    <div class="search-big">
+      <input type="text" id="searchBox" placeholder="Search articles..."/>
+      <button onclick="doSearchNow()">Search</button>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="ad-banner">Advertisement</div>
+  <div class="result-count" id="resultCount"></div>
+  <div class="cards-grid" id="resultsGrid">
+    <div class="empty-state" style="grid-column:1/-1">
+      <div style="font-size:2.5rem;">🔍</div>
+      <h3>Enter a search term above</h3>
+    </div>
+  </div>
+  <div id="paginationWrap"></div>
+</div>
+<div id="footerWrap"></div>
+<div class="toast" id="toast"></div>
+<script src="js/app.js"></script>
+<script>
+let cQ = '', cPg = 1;
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('topbarWrap').innerHTML = buildTopbar();
+  document.getElementById('navWrap').innerHTML    = buildNav('search.html');
+  document.getElementById('footerWrap').innerHTML = buildFooter();
+  updateDate();
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (q) { document.getElementById('searchBox').value = q; search(q,1); }
+  document.getElementById('searchBox').addEventListener('keydown', e => { if (e.key==='Enter') doSearchNow(); });
+});
+function doSearchNow() {
+  const q = document.getElementById('searchBox').value.trim();
+  if (!q) return;
+  window.history.replaceState({}, '', `search.html?q=${encodeURIComponent(q)}`);
+  search(q, 1);
+}
+async function search(q, page) {
+  cQ = q; cPg = page;
+  document.getElementById('resultsGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#aaa;">Searching...</div>';
+  document.title = `"${q}" — SFAAM NEWS`;
+  try {
+    const r    = await fetch(`/api/search?q=${encodeURIComponent(q)}&page=${page}&per_page=12`);
+    const arts = await r.json();
+    document.getElementById('resultCount').textContent = arts.length ? `Showing results for "${q}"` : '';
+    if (!arts.length) {
+      document.getElementById('resultsGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div style="font-size:2.5rem;">😔</div><h3>No results for "${q}"</h3><p>Try different keywords.</p></div>`;
+      document.getElementById('paginationWrap').innerHTML = '';
+      return;
+    }
+    document.getElementById('resultsGrid').innerHTML    = arts.map(buildCard).join('');
+    document.getElementById('paginationWrap').innerHTML = buildPagination(page, arts.length===12, 'searchPage');
+  } catch {
+    document.getElementById('resultsGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><h3>Server not running</h3></div>';
+  }
+}
+function searchPage(p) { search(cQ, p); window.scrollTo({top:0,behavior:'smooth'}); }
+</script>
+</body>
+</html>

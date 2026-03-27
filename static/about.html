@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About Us — SFAAM NEWS</title>
+<meta name="description" content="About SFAAM NEWS — Your trusted source for world news updated every 5 minutes."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.about-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+.about-hero {
+  background: linear-gradient(135deg, #8B0000, #111);
+  color: white; padding: 60px 40px;
+  text-align: center; margin-bottom: 32px;
+}
+.about-hero h1 { font-family:'Noto Serif',serif; font-size: 2.2rem; font-weight:700; margin-bottom:10px; }
+.about-hero p { opacity:0.85; font-size:0.95rem; max-width:500px; margin:0 auto; line-height:1.7; }
+.stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+.stat-box { background:var(--white); border:1px solid var(--border); padding:24px; text-align:center; }
+.stat-num { font-family:'Noto Serif',serif; font-size:2rem; font-weight:700; color:var(--red); }
+.stat-lbl { font-size:0.75rem; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:1px; }
+.about-section { background:var(--white); border:1px solid var(--border); padding:28px; margin-bottom:16px; }
+.about-section h2 { font-family:'Noto Serif',serif; font-size:1.3rem; font-weight:700; color:var(--black); margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--red); }
+.about-section p { font-size:0.9rem; line-height:1.8; color:#444; margin-bottom:10px; }
+.step-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:14px; }
+.step-box { background:var(--light); padding:16px; text-align:center; border-radius:2px; }
+.step-num { font-family:'Noto Serif',serif; font-size:2rem; font-weight:700; color:var(--red); }
+.step-title { font-weight:700; font-size:0.85rem; margin:6px 0 4px; }
+.step-desc { font-size:0.78rem; color:var(--muted); line-height:1.5; }
+@media(max-width:700px) { .stats-grid{grid-template-columns:1fr 1fr;} .step-grid{grid-template-columns:1fr;} .about-hero{padding:40px 20px;} .about-hero h1{font-size:1.6rem;} }
+@media(max-width:450px) { .stats-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div id="topbarWrap"></div>
+<div id="navWrap"></div>
+<div class="about-wrap">
+  <div class="about-hero">
+    <h1>About SFAAM NEWS</h1>
+    <p>Your trusted source for world news — automatically updated every 5 minutes using artificial intelligence.</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-num">5</div><div class="stat-lbl">World Regions</div></div>
+    <div class="stat-box"><div class="stat-num">25</div><div class="stat-lbl">News Sources</div></div>
+    <div class="stat-box"><div class="stat-num">5 min</div><div class="stat-lbl">Update Cycle</div></div>
+  </div>
+  <div class="about-section">
+    <h2>Who We Are</h2>
+    <p>SFAAM NEWS is a next-generation news platform that brings you the latest stories from around the world — automatically, reliably, and constantly. Our AI-powered system monitors global news sources 24 hours a day, 7 days a week.</p>
+    <p>We cover 5 major regions: World News, USA, UK, Pakistan, and India — giving you a truly global perspective on the events that matter most.</p>
+  </div>
+  <div class="about-section">
+    <h2>How It Works</h2>
+    <div class="step-grid">
+      <div class="step-box">
+        <div class="step-num">1</div>
+        <div class="step-title">Monitor</div>
+        <div class="step-desc">We continuously monitor 25 trusted news sources from around the world.</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">2</div>
+        <div class="step-title">Rewrite</div>
+        <div class="step-desc">Our AI rewrites each article in an engaging, SEO-optimized format.</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">3</div>
+        <div class="step-title">Publish</div>
+        <div class="step-desc">Articles are automatically published every 5 minutes, 24/7.</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-section">
+    <h2>Our Mission</h2>
+    <p>SFAAM NEWS exists to make quality global news accessible to everyone. We believe staying informed should be easy, fast, and free. Our mission is to be the go-to source for people who want to stay updated on world events without spending hours searching across multiple websites.</p>
+  </div>
+</div>
+<div id="footerWrap"></div>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('topbarWrap').innerHTML = buildTopbar();
+  document.getElementById('navWrap').innerHTML    = buildNav('about.html');
+  document.getElementById('footerWrap').innerHTML = buildFooter();
+  updateDate();
+});
+</script>
+</body>
+</html>

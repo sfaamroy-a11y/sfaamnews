@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>USA News — SFAAM NEWS</title>
+<meta name="description" content="Latest USA News updated every 5 minutes on SFAAM NEWS."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="topbarWrap"></div>
+<div id="tickerWrap"></div>
+<div id="navWrap"></div>
+<div class="page-hdr">
+  <div class="page-hdr-inner">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="page-flag">🇺🇸</span>
+      <div>
+        <div class="page-title">USA News</div>
+        <div class="page-sub">SFAAM NEWS — Updated every 5 minutes</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="ad-banner">Advertisement</div>
+  <div class="main-layout">
+    <div>
+      <div id="featuredWrap"></div>
+      <div class="more-label">More Stories</div>
+      <div class="cards-grid" id="cardsGrid"></div>
+      <div id="paginationWrap"></div>
+    </div>
+    <div id="sidebarWrap"></div>
+  </div>
+</div>
+<div id="footerWrap"></div>
+<div class="toast" id="toast"></div>
+<script src="js/app.js"></script>
+<script>
+let pg = 1;
+const REGION = "usa";
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("topbarWrap").innerHTML = buildTopbar();
+  document.getElementById("navWrap").innerHTML    = buildNav("usa-news.html");
+  document.getElementById("footerWrap").innerHTML = buildFooter();
+  updateDate();
+  loadPage(1);
+});
+async function loadPage(page) {
+  pg = page;
+  try {
+    const r    = await fetch("/api/articles?region=" + REGION + "&page=" + page + "&per_page=12");
+    const arts = await r.json();
+    if (!arts.length && page === 1) {
+      document.getElementById("featuredWrap").innerHTML = "";
+      document.getElementById("cardsGrid").innerHTML = "<div class=\"empty-state\" style=\"grid-column:1/-1\"><div style=\"font-size:2.5rem;\">📰</div><h3>Loading articles...</h3><p>News appears automatically every 5 minutes.</p></div>";
+      document.getElementById("paginationWrap").innerHTML = "";
+      return;
+    }
+    if (page === 1 && arts.length >= 3) {
+      document.getElementById("featuredWrap").innerHTML = buildFeatured(arts, "USA News — Top Stories");
+      document.getElementById("cardsGrid").innerHTML    = arts.slice(3).map(buildCard).join("");
+    } else {
+      document.getElementById("featuredWrap").innerHTML = "";
+      document.getElementById("cardsGrid").innerHTML    = arts.map(buildCard).join("");
+    }
+    document.getElementById("paginationWrap").innerHTML = buildPagination(page, arts.length === 12, "loadPage");
+    document.getElementById("sidebarWrap").innerHTML    = buildSidebar(arts);
+    document.getElementById("tickerWrap").innerHTML     = buildTicker(arts);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch {
+    document.getElementById("cardsGrid").innerHTML = "<div class=\"empty-state\" style=\"grid-column:1/-1\"><h3>Server not running</h3><p>Start: python main.py</p></div>";
+  }
+}
+</script>
+</body>
+</html>

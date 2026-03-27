@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SFAAM NEWS — Article</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.article-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 16px 60px;
+}
+.article-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--red);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 16px 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+.article-back:hover { text-decoration: underline; }
+.article-region {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.article-title {
+  font-family: 'Noto Serif', serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--black);
+  margin-bottom: 12px;
+}
+.article-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.article-hero-img {
+  width: 100%;
+  max-height: 460px;
+  object-fit: cover;
+  border-radius: 2px;
+  margin-bottom: 24px;
+  background: #ddd;
+  display: block;
+}
+.article-body {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: #333;
+}
+.article-body p { margin-bottom: 1.1rem; }
+.article-body h2 {
+  font-family: 'Noto Serif', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--black);
+  margin: 2rem 0 0.7rem;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Noto Serif', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--black);
+  margin: 1.5rem 0 0.5rem;
+}
+.article-body strong { color: var(--black); }
+.article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+.article-body li { margin-bottom: 0.4rem; }
+.article-body blockquote {
+  border-left: 3px solid var(--red);
+  padding: 8px 16px;
+  margin: 1rem 0;
+  background: #fafafa;
+  color: var(--grey);
+  font-style: italic;
+}
+.article-ad {
+  background: #f0f0f0;
+  border: 1px dashed #ccc;
+  padding: 12px;
+  text-align: center;
+  margin: 24px 0;
+  font-size: 0.7rem;
+  color: #aaa;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.related-section {
+  margin-top: 40px;
+  border-top: 2px solid var(--red);
+  padding-top: 20px;
+}
+.related-title {
+  font-family: 'Noto Serif', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media(max-width:700px) {
+  .related-grid { grid-template-columns: 1fr 1fr; }
+  .article-title { font-size: 1.4rem; }
+}
+@media(max-width:450px) {
+  .related-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="topbarWrap"></div>
+<div id="tickerWrap"></div>
+<div id="navWrap"></div>
+
+<div class="article-wrap">
+  <button class="article-back" onclick="history.back()">← Back</button>
+
+  <!-- TOP AD -->
+  <div class="ad-banner">
+    <!-- AdSense / Monetag -->
+    Advertisement
+  </div>
+
+  <div id="articleContent">
+    <div class="empty-state"><h3>Loading article...</h3></div>
+  </div>
+
+  <!-- RELATED ARTICLES -->
+  <div class="related-section">
+    <div class="related-title">📰 More Stories</div>
+    <div class="related-grid" id="relatedGrid"></div>
+  </div>
+</div>
+
+<div id="footerWrap"></div>
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const REGIONS_MAP = {
+  world:    '🌐 World News',
+  usa:      '🇺🇸 USA News',
+  uk:       '🇬🇧 UK News',
+  pakistan: '🇵🇰 Pakistan News',
+  india:    '🇮🇳 India News',
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('topbarWrap').innerHTML = buildTopbar();
+  document.getElementById('navWrap').innerHTML    = buildNav('');
+  document.getElementById('footerWrap').innerHTML = buildFooter();
+  updateDate();
+
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (id) {
+    loadArticle(id);
+  } else {
+    document.getElementById('articleContent').innerHTML =
+      '<div class="empty-state"><h3>Article not found</h3><p>Go back and try again.</p></div>';
+  }
+});
+
+async function loadArticle(id) {
+  try {
+    const r = await fetch(`/api/articles/${id}`);
+    if (!r.ok) throw new Error('Not found');
+    const a = await r.json();
+
+    // Update page SEO
+    document.title = `${a.title} — SFAAM NEWS`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', a.meta_desc || a.summary || '');
+
+    const regionName = REGIONS_MAP[a.region] || 'SFAAM NEWS';
+    const imgH = a.image_url
+      ? `<img class="article-hero-img" src="${esc(a.image_url)}" alt="${esc(a.title)}" onerror="this.style.display='none'">`
+      : '';
+
+    // Render markdown content
+    const bodyHtml = typeof marked !== 'undefined'
+      ? marked.parse(a.ai_content || '')
+      : `<p>${esc(a.ai_content || '')}</p>`;
+
+    document.getElementById('articleContent').innerHTML = `
+      <div class="article-region">SFAAM NEWS · ${regionName}</div>
+      <h1 class="article-title">${esc(a.title)}</h1>
+      <div class="article-meta">
+        <span>📅 ${fmtDateLong(a.date)}</span>
+        <span>📰 SFAAM NEWS</span>
+      </div>
+      ${imgH}
+      <div class="article-ad">
+        <!-- AdSense in-article ad -->
+        Advertisement
+      </div>
+      <div class="article-body">${bodyHtml}</div>`;
+
+    // Load related articles
+    loadRelated(a.region, id);
+
+    // Load ticker
+    loadTicker();
+
+  } catch (err) {
+    document.getElementById('articleContent').innerHTML = `
+      <div class="empty-state">
+        <h3>Could not load article</h3>
+        <p>Please go back and try again.</p>
+      </div>`;
+  }
+}
+
+async function loadRelated(region, excludeId) {
+  try {
+    const r    = await fetch(`/api/articles?region=${region}&per_page=9`);
+    const arts = await r.json();
+    const filtered = arts.filter(a => String(a.id) !== String(excludeId)).slice(0, 3);
+
+    if (!filtered.length) {
+      document.getElementById('relatedGrid').innerHTML =
+        '<p style="color:#aaa;font-size:0.8rem;">More articles coming soon...</p>';
+      return;
+    }
+
+    // Use buildCard — goArticle() navigates to article.html
+    document.getElementById('relatedGrid').innerHTML = filtered.map(a => buildCard(a)).join('');
+  } catch {}
+}
+
+async function loadTicker() {
+  try {
+    const r    = await fetch('/api/articles?per_page=10');
+    const arts = await r.json();
+    document.getElementById('tickerWrap').innerHTML = buildTicker(arts);
+  } catch {}
+}
+</script>
+</body>
+</html>

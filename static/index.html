@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SFAAM NEWS — World News, Latest Updates</title>
+<meta name="description" content="SFAAM NEWS — Latest world news from USA, UK, Pakistan, India and beyond. Updated every 5 minutes."/>
+<meta name="keywords" content="world news, latest news, pakistan news, india news, usa news, uk news, breaking news"/>
+<meta property="og:title" content="SFAAM NEWS"/>
+<meta property="og:description" content="Latest world news updated every 5 minutes."/>
+<meta property="og:type" content="website"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+/* Home page specific */
+.home-section { margin-bottom: 28px; }
+.home-section-hdr {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--red);
+}
+.home-section-title {
+  font-family: 'Noto Serif', serif;
+  font-size: 1rem; font-weight: 700;
+  color: var(--black);
+  display: flex; align-items: center; gap: 8px;
+}
+.view-all {
+  font-size: 0.75rem; color: var(--red);
+  font-weight: 700; text-decoration: none;
+  white-space: nowrap;
+}
+.view-all:hover { text-decoration: underline; }
+
+/* YouTube-style thumbnail row */
+.thumb-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.thumb-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  overflow: hidden;
+}
+.thumb-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.thumb-img {
+  width: 100%; aspect-ratio: 16/9;
+  object-fit: cover; background: #ddd; display: block;
+}
+.thumb-img-ph {
+  width: 100%; aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--red-dark), #555);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; color: rgba(255,255,255,0.1);
+}
+.thumb-body { padding: 10px; }
+.thumb-cat { font-size: 0.6rem; color: var(--red); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+.thumb-title {
+  font-family: 'Noto Serif', serif;
+  font-size: 0.85rem; font-weight: 700;
+  line-height: 1.3; color: var(--black);
+  display: -webkit-box; -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.thumb-date { font-size: 0.65rem; color: var(--muted); margin-top: 5px; }
+
+/* Hero */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.hero-main {
+  background: var(--white); border: 1px solid var(--border);
+  cursor: pointer; overflow: hidden; transition: box-shadow 0.2s;
+}
+.hero-main:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+.hero-main-img { width: 100%; height: 280px; object-fit: cover; background: #ddd; display: block; }
+.hero-main-img-ph { width: 100%; height: 280px; background: linear-gradient(135deg, var(--red-dark), #333); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: rgba(255,255,255,0.1); }
+.hero-main-body { padding: 16px; }
+.hero-side { display: flex; flex-direction: column; gap: 12px; }
+.hero-side-card {
+  background: var(--white); border: 1px solid var(--border);
+  cursor: pointer; overflow: hidden; flex: 1;
+  transition: box-shadow 0.2s; display: flex; flex-direction: column;
+}
+.hero-side-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+.hero-side-img { width: 100%; height: 100px; object-fit: cover; background: #ddd; display: block; }
+.hero-side-img-ph { width: 100%; height: 100px; background: linear-gradient(135deg, var(--red-dark), #444); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.1); }
+.hero-side-body { padding: 10px; flex: 1; }
+
+/* Newsletter */
+.newsletter-box {
+  background: linear-gradient(135deg, var(--red-dark), var(--dark));
+  padding: 24px; text-align: center; margin: 24px 0;
+}
+.newsletter-box h3 { font-family: 'Noto Serif', serif; color: white; font-size: 1.1rem; margin-bottom: 6px; }
+.newsletter-box p { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+.nl-form { display: flex; max-width: 400px; margin: 0 auto; gap: 0; }
+.nl-input { flex: 1; padding: 10px 14px; border: none; font-size: 0.85rem; border-radius: 3px 0 0 3px; outline: none; }
+.nl-btn { padding: 10px 18px; background: var(--red); border: none; color: white; font-size: 0.82rem; font-weight: 700; cursor: pointer; border-radius: 0 3px 3px 0; white-space: nowrap; }
+.nl-btn:hover { background: #d00000; }
+
+/* Responsive */
+@media(max-width:900px) {
+  .thumb-row { grid-template-columns: repeat(2, 1fr); }
+  .hero-grid { grid-template-columns: 1fr; }
+}
+@media(max-width:500px) {
+  .thumb-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .hero-main-img { height: 200px; }
+}
+</style>
+</head>
+<body>
+<div id="topbarWrap"></div>
+<div id="tickerWrap"></div>
+<div id="navWrap"></div>
+
+<div class="wrap">
+  <!-- TOP AD -->
+  <div class="ad-banner">
+    <!-- AdSense / Monetag leaderboard 728×90 -->
+    Advertisement
+  </div>
+
+  <!-- HERO -->
+  <div id="heroSection"></div>
+
+  <div class="main-layout">
+    <div>
+
+      <!-- WORLD ROW -->
+      <div class="home-section">
+        <div class="home-section-hdr">
+          <span class="home-section-title">🌐 World News</span>
+          <a href="world-news.html" class="view-all">View All →</a>
+        </div>
+        <div class="thumb-row" id="worldRow"></div>
+      </div>
+
+      <!-- AD MID -->
+      <div class="ad-banner">Advertisement</div>
+
+      <!-- USA ROW -->
+      <div class="home-section">
+        <div class="home-section-hdr">
+          <span class="home-section-title">🇺🇸 USA News</span>
+          <a href="usa-news.html" class="view-all">View All →</a>
+        </div>
+        <div class="thumb-row" id="usaRow"></div>
+      </div>
+
+      <!-- UK ROW -->
+      <div class="home-section">
+        <div class="home-section-hdr">
+          <span class="home-section-title">🇬🇧 UK News</span>
+          <a href="uk-news.html" class="view-all">View All →</a>
+        </div>
+        <div class="thumb-row" id="ukRow"></div>
+      </div>
+
+      <!-- NEWSLETTER -->
+      <div class="newsletter-box">
+        <h3>📧 Stay Updated</h3>
+        <p>Get the latest news delivered to your inbox every morning.</p>
+        <div class="nl-form">
+          <input class="nl-input" type="email" id="nlEmail" placeholder="Your email address"/>
+          <button class="nl-btn" onclick="subscribe()">Subscribe →</button>
+        </div>
+      </div>
+
+      <!-- AD MID 2 -->
+      <div class="ad-banner">Advertisement</div>
+
+      <!-- PAKISTAN ROW -->
+      <div class="home-section">
+        <div class="home-section-hdr">
+          <span class="home-section-title">🇵🇰 Pakistan News</span>
+          <a href="pakistan-news.html" class="view-all">View All →</a>
+        </div>
+        <div class="thumb-row" id="pakistanRow"></div>
+      </div>
+
+      <!-- INDIA ROW -->
+      <div class="home-section">
+        <div class="home-section-hdr">
+          <span class="home-section-title">🇮🇳 India News</span>
+          <a href="india-news.html" class="view-all">View All →</a>
+        </div>
+        <div class="thumb-row" id="indiaRow"></div>
+      </div>
+
+    </div>
+    <div id="sidebarWrap"></div>
+  </div>
+</div>
+
+<div id="footerWrap"></div>
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('topbarWrap').innerHTML = buildTopbar();
+  document.getElementById('navWrap').innerHTML    = buildNav('index.html');
+  document.getElementById('footerWrap').innerHTML = buildFooter();
+  updateDate();
+  setInterval(updateDate, 60000);
+  loadHero();
+  loadRow('world',    'worldRow');
+  loadRow('usa',      'usaRow');
+  loadRow('uk',       'ukRow');
+  loadRow('pakistan', 'pakistanRow');
+  loadRow('india',    'indiaRow');
+  loadSidebar();
+});
+
+async function loadHero() {
+  try {
+    const r    = await fetch('/api/articles?per_page=3');
+    const arts = await r.json();
+    if (!arts.length) {
+      document.getElementById('heroSection').innerHTML = `
+        <div class="empty-state" style="margin-bottom:20px;">
+          <div style="font-size:2.5rem;">📰</div>
+          <h3>Articles Loading...</h3>
+          <p>News will appear automatically every 5 minutes.</p>
+          <button class="btn-primary" onclick="triggerFetch()">⚡ Fetch Now</button>
+        </div>`;
+      return;
+    }
+    const [main, ...sides] = arts;
+    const mImg = main.image_url
+      ? `<img class="hero-main-img" src="${esc(main.image_url)}" alt="${esc(main.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'hero-main-img-ph\\'>📰</div>'">`
+      : `<div class="hero-main-img-ph">📰</div>`;
+    const sideCards = sides.map(s => {
+      const sImg = s.image_url
+        ? `<img class="hero-side-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'hero-side-img-ph\\'>📰</div>'">`
+        : `<div class="hero-side-img-ph">📰</div>`;
+      return `
+        <div class="hero-side-card" onclick="goArticle(${s.id})">
+          ${sImg}
+          <div class="hero-side-body">
+            <div class="cat-tag">SFAAM NEWS</div>
+            <div class="h-sm">${esc(s.title)}</div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:4px;">${fmtDate(s.date)}</div>
+          </div>
+        </div>`;
+    }).join('');
+    document.getElementById('heroSection').innerHTML = `
+      <div class="section-label" style="margin-bottom:12px;">⚡ Top Stories Right Now</div>
+      <div class="hero-grid">
+        <div class="hero-main" onclick="goArticle(${main.id})">
+          ${mImg}
+          <div class="hero-main-body">
+            <div class="cat-tag">SFAAM NEWS · ${fmtDate(main.date)}</div>
+            <div class="h-xl">${esc(main.title)}</div>
+            <div class="summary" style="-webkit-line-clamp:2;">${esc(main.summary||'')}</div>
+            <div class="read-more" style="margin-top:10px;">Read Full Story →</div>
+          </div>
+        </div>
+        <div class="hero-side">${sideCards}</div>
+      </div>`;
+
+    // Update ticker
+    const tr    = await fetch('/api/articles?per_page=10');
+    const tarts = await tr.json();
+    document.getElementById('tickerWrap').innerHTML = buildTicker(tarts);
+  } catch {
+    document.getElementById('heroSection').innerHTML = `
+      <div class="empty-state" style="margin-bottom:20px;">
+        <h3>⚙️ Server starting...</h3>
+        <p>Please wait a moment and refresh.</p>
+      </div>`;
+  }
+}
+
+async function loadRow(region, elId) {
+  try {
+    const r    = await fetch(`/api/articles?region=${region}&per_page=4`);
+    const arts = await r.json();
+    if (!arts.length) {
+      document.getElementById(elId).innerHTML =
+        `<p style="color:#aaa;font-size:0.8rem;padding:10px;grid-column:1/-1;">Loading articles...</p>`;
+      return;
+    }
+    document.getElementById(elId).innerHTML = arts.map(a => {
+      const img = a.image_url
+        ? `<img class="thumb-img" src="${esc(a.image_url)}" alt="${esc(a.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'thumb-img-ph\\'>📰</div>'">`
+        : `<div class="thumb-img-ph">📰</div>`;
+      return `
+        <div class="thumb-card" onclick="goArticle(${a.id})">
+          ${img}
+          <div class="thumb-body">
+            <div class="thumb-cat">SFAAM NEWS</div>
+            <div class="thumb-title">${esc(a.title)}</div>
+            <div class="thumb-date">${fmtDate(a.date)}</div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch {}
+}
+
+async function loadSidebar() {
+  try {
+    const r    = await fetch('/api/articles?per_page=6');
+    const arts = await r.json();
+    document.getElementById('sidebarWrap').innerHTML = buildSidebar(arts);
+  } catch {
+    document.getElementById('sidebarWrap').innerHTML = buildSidebar([]);
+  }
+}
+
+async function subscribe() {
+  const email = document.getElementById('nlEmail').value.trim();
+  if (!email || !email.includes('@')) { showToast('⚠️ Valid email daalo!'); return; }
+  try {
+    await fetch(`/api/subscribe?email=${encodeURIComponent(email)}`, {method:'POST'});
+    showToast('✅ Successfully subscribed!');
+    document.getElementById('nlEmail').value = '';
+  } catch { showToast('❌ Error. Try again.'); }
+}
+
+async function triggerFetch() {
+  try {
+    await fetch('/api/trigger', {method:'POST'});
+    showToast('⚡ Fetching news! Wait 2-3 minutes.');
+    setTimeout(() => { loadHero(); loadRow('world','worldRow'); }, 10000);
+  } catch { showToast('❌ Server not running.'); }
+}
+</script>
+</body>
+</html>
